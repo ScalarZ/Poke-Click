@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import * as jwt from 'jose';
 
 	onMount(() => {
 		const accessToken = window.localStorage.getItem('MyToken');
-
 		if (accessToken) {
-			goto('/click');
+			const data = jwt.decodeJwt(accessToken);
+			goto('/' + data.id + '/click');
 		}
 	});
 </script>

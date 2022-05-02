@@ -1,39 +1,51 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import axios from 'axios';
+	import * as jwt from 'jose';
 	import { coins, error, loading } from '../../store';
 
 	loading.set(true);
+	let userId: any;
 
-	const updateCoins = () => {
-		const interval = setInterval(async () => {
-			console.log('start');
-			const accessToken = window.localStorage.getItem('MyToken');
-			await axios.post(
-				'http://localhost:8080/coins',
+	const incrementCounter = (): void => {
+		coins.update((c) => c + 100000);
+	};
+	const UpdateCoins = () => {
+		const accessToken = window.localStorage.getItem('MyToken');
+
+		axios.post(
+			'http://localhost:8080/coins/',
+			{ coins: $coins },
+			{
+				headers: {
+					authorization: 'Bearer ' + accessToken
+				}
+			}
+		);
+	};
+	const handleLogOut = () => {
+		UpdateCoins();
+		window.localStorage.removeItem('MyToken');
+	};
+
+	onMount(async () => {
+		const accessToken = window.localStorage.getItem('MyToken');
+		window.addEventListener('beforeunload', () =>
+			axios.post(
+				'http://localhost:8080/coins/',
 				{ coins: $coins },
 				{
 					headers: {
 						authorization: 'Bearer ' + accessToken
 					}
 				}
-			);
-			console.log('finish');
-		}, 5000);
-		onDestroy(() => clearInterval(interval));
-	};
-	updateCoins();
-
-	const incrementCounter = (): void => {
-		coins.update((c) => c + 1);
-	};
-
-	onMount(async () => {
-		const accessToken = window.localStorage.getItem('MyToken');
-
+			)
+		);
 		if (accessToken) {
 			try {
+				const user = jwt.decodeJwt(accessToken);
+				userId = user.id;
 				const { data } = await axios.get('http://localhost:8080/click/', {
 					headers: {
 						authorization: 'Bearer ' + accessToken
@@ -43,7 +55,6 @@
 				coins.set(data.coins);
 			} catch (err) {
 				goto('/');
-			} finally {
 			}
 		} else {
 			goto('/');
@@ -52,6 +63,25 @@
 </script>
 
 <div class="mx-auto">
+	<header class="mx-auto px-8 py-4 flex justify-between bg-slate-300">
+		<h2>Logo</h2>
+		<nav>
+			<ul class="space-x-4 flex list-none">
+				<li>
+					<a href={'/' + userId + '/click'}>Click</a>
+				</li>
+				<li on:click={UpdateCoins}>
+					<a href={'/' + userId + '/collections'}>collections</a>
+				</li>
+				<li on:click={UpdateCoins}>
+					<a href={'/' + userId + '/store'}>store</a>
+				</li>
+				<li on:click={handleLogOut}>
+					<a href="/">log out</a>
+				</li>
+			</ul>
+		</nav>
+	</header>
 	<h1 class="p-[8vh] text-5xl font-bold text-center">Poke-Click</h1>
 	{#if $loading}
 		{#if $error}

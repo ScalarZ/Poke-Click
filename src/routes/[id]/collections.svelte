@@ -8,6 +8,9 @@
 
 	loading.set(true);
 	let userId: string;
+	const handleLogOut = () => {
+		window.localStorage.removeItem('MyToken');
+	};
 
 	onMount(async () => {
 		const accessToken = window.localStorage.getItem('MyToken');
@@ -32,6 +35,25 @@
 </script>
 
 <div class="mx-auto">
+	<header class="mx-auto px-8 py-4 flex justify-between bg-slate-300">
+		<h2>Logo</h2>
+		<nav>
+			<ul class="space-x-4 flex list-none">
+				<li>
+					<a href={'/' + userId + '/click'}>Click</a>
+				</li>
+				<li>
+					<a href={'/' + userId + '/collections'}>collections</a>
+				</li>
+				<li>
+					<a href={'/' + userId + '/store'}>store</a>
+				</li>
+				<li on:click={handleLogOut}>
+					<a href="/">log out</a>
+				</li>
+			</ul>
+		</nav>
+	</header>
 	<h1 class="pt-[8vh] text-5xl font-bold text-center">Collections</h1>
 	<div class="mt-[10vh] w-full flex flex-wrap justify-center">
 		{#if $loading}

@@ -5,13 +5,16 @@
 	import * as jwt from 'jose';
 
 	let username: string, email: string, password: string;
+	let isValid = true;
 
 	const hundleSubmit = async (username: string, email: string, password: string): Promise<void> => {
-		const res = await axios.post('http://localhost:8080/signup', { username, email, password });
-		if (res.status == 201) {
+		try {
+			const res = await axios.post('http://localhost:8080/signup', { username, email, password });
 			window.localStorage.setItem('MyToken', res.data);
 			const data = jwt.decodeJwt(res.data);
 			goto('/' + data.id + '/click/');
+		} catch (err) {
+			isValid = false;
 		}
 	};
 
@@ -33,7 +36,7 @@
 				id="username"
 				bind:value={username}
 				type="text"
-				required
+				required={true}
 				class="py-0.5 px-2 border border-gray-400"
 			/>
 		</label>
@@ -43,7 +46,7 @@
 				id="email"
 				bind:value={email}
 				type="text"
-				required
+				required={true}
 				class="py-0.5 px-2 border border-gray-400"
 			/>
 		</label>
@@ -53,15 +56,21 @@
 				id="password"
 				bind:value={password}
 				type="password"
-				required
+				required={true}
 				class="py-0.5 px-2 border border-gray-400"
 			/>
 		</label>
 		<button
-			class="m-auto py-1 px-4 rounded bg-zinc-700 text-white"
+			class={`m-auto py-1 px-4 rounded ${
+				!username || !email || !password ? 'bg-slate-400' : 'bg-zinc-700'
+			} text-white cursor-pointer`}
+			disabled={!username || !email || !password}
 			on:click|preventDefault={() => hundleSubmit(username, email, password)}
 		>
 			Submit
 		</button>
+		{#if !isValid}
+			<span class="text-red-600 text-center">email already exists</span>
+		{/if}
 	</form>
 </main>
