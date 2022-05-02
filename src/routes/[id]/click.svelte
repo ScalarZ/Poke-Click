@@ -9,7 +9,7 @@
 	let userId: any;
 
 	const incrementCounter = (): void => {
-		coins.update((c) => c + 100000);
+		coins.update((c) => c + 1);
 	};
 	const UpdateCoins = () => {
 		const accessToken = window.localStorage.getItem('MyToken');
