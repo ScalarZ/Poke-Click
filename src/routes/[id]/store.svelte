@@ -21,7 +21,7 @@
 			popup = true;
 			coins.update((c) => c - 100);
 			const { data } = await axios.post(
-				'http://localhost:8080/catch',
+				'https://poki-click.herokuapp.com/catch',
 				{ index: random },
 				{
 					headers: {
@@ -46,7 +46,7 @@
 		const accessToken = window.localStorage.getItem('MyToken');
 		if (accessToken) {
 			try {
-				const { data } = await axios.get('http://localhost:8080/collections/', {
+				const { data } = await axios.get('https://poki-click.herokuapp.com/collections/', {
 					headers: {
 						authorization: 'Bearer ' + accessToken
 					}

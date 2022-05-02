@@ -33,7 +33,7 @@
 
 		const accessToken = window.localStorage.getItem('MyToken');
 		axios.post(
-			'http://localhost:8080/upgrade',
+			'https://poki-click.herokuapp.com/upgrade',
 			{ id, index, subIndex, coins: $coins },
 			{
 				headers: {

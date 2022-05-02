@@ -9,7 +9,11 @@
 
 	const hundleSubmit = async (username: string, email: string, password: string): Promise<void> => {
 		try {
-			const res = await axios.post('http://localhost:8080/signup', { username, email, password });
+			const res = await axios.post('https://poki-click.herokuapp.com/signup', {
+				username,
+				email,
+				password
+			});
 			window.localStorage.setItem('MyToken', res.data);
 			const data = jwt.decodeJwt(res.data);
 			goto('/' + data.id + '/click/');

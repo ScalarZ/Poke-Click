@@ -52,7 +52,7 @@
 		const accessToken = window.localStorage.getItem('MyToken');
 		if (accessToken) {
 			try {
-				const { data } = await axios.get('http://localhost:8080/collections/', {
+				const { data } = await axios.get('https://poki-click.herokuapp.com/collections/', {
 					headers: {
 						authorization: 'Bearer ' + accessToken
 					}

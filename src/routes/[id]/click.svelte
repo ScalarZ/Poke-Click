@@ -15,7 +15,7 @@
 		const accessToken = window.localStorage.getItem('MyToken');
 
 		axios.post(
-			'http://localhost:8080/coins/',
+			'https://poki-click.herokuapp.com/coins/',
 			{ coins: $coins },
 			{
 				headers: {
@@ -33,7 +33,7 @@
 		const accessToken = window.localStorage.getItem('MyToken');
 		window.addEventListener('beforeunload', () =>
 			axios.post(
-				'http://localhost:8080/coins/',
+				'https://poki-click.herokuapp.com/coins/',
 				{ coins: $coins },
 				{
 					headers: {
@@ -46,7 +46,7 @@
 			try {
 				const user = jwt.decodeJwt(accessToken);
 				userId = user.id;
-				const { data } = await axios.get('http://localhost:8080/click/', {
+				const { data } = await axios.get('https://poki-click.herokuapp.com/click/', {
 					headers: {
 						authorization: 'Bearer ' + accessToken
 					}
